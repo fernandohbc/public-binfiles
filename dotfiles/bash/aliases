@@ -1,0 +1,213 @@
+# Command Enhancements
+
+# Utility
+alias reload='source ~/.bin/dotfiles/bash/aliases'
+alias ea='vim ~/.bin/dotfiles/bash/aliases && reload' # Edit aliases
+alias ee="vim ~/.bin/dotfiles/bash/env"
+
+# Quicker cd
+function cr() {
+ cd ~/repos/$*
+}
+
+# Common -- Some are from Damian Conway
+alias a='ls -A' # -A all except literal . ..
+alias la="ls -A -l -G"
+alias c='clear'
+alias cdd='cd -'  # goto last dir cd'ed from
+alias cl='clear; l'
+function cdc() {
+    cd $1; ls
+}
+alias cls='clear; ls'
+alias h='history'
+alias ls='ls --color'
+alias l.='ls -d .[^.]*'
+alias l='ls -lhGt'  # -l long listing, most recent first
+                    # -G color
+alias lh="ls -lh"
+alias ll='ls -lhG'  # -l long listing, human readable, no group info
+alias lt='ls -lt' # sort with recently modified first
+alias md='mkdir -p'
+alias s='cd ..'   # up one dir
+alias grep='grep --color'
+
+alias cc='php symfony cc'
+
+function take() {
+    mkdir -p "$1"
+    cd "$1"
+}
+
+alias e='exit'
+alias k9="killall -9"
+function killnamed () {
+    ps ax | grep $1 | cut -d ' ' -f 2 | xargs kill
+}
+function zipr() {
+  zip -r $1.zip $1
+}
+
+# General code
+
+# From Chris Wanstrath
+function pless() {
+    pygmentize $1 | less -r
+}
+
+# Processes
+alias tu='top -o cpu' # cpu
+alias tm='top -o vsize' # memory
+
+# Mercurial hg
+function new-hg() {
+    ssh hg@example.com "hg init $1"
+    hg clone ssh://hg@example.com/$1
+}
+
+# Git
+
+# Hub gem
+function git(){hub "$@"}
+
+alias ungit="find . -name '.git' -exec rm -rf {} \;"
+alias g='git'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gc='git commit -v'
+alias gca='git commit -v -a'
+alias gco='git checkout'
+alias gd='git diff'
+alias gdm='git diff master'
+alias gl='git pull'
+alias glr="git pull --rebase"
+alias gnp="git-notpushed"
+alias gp='git push'
+alias gs='git status -s'
+alias ga='git add'
+alias gcl='git clean -x -f'
+alias eg='vim .git/config'
+alias gm='git merge'
+
+alias gg='gitg &'
+
+function gr() {
+  git checkout master
+  git pull
+  git checkout $1
+  git rebase master
+}
+
+# Setup a tracking branch from [remote] [branch_name]
+function gbt() {
+  git branch --track $2 $1/$2 && git checkout $2
+}
+# Quickly clobber a file and checkout
+function grf() {
+  rm $1
+  git checkout $1
+}
+
+# Text editing
+alias vi='vim'
+alias gv='gvim'
+
+# Rails
+alias r="rails"
+alias rp='touch tmp/restart.txt'
+alias tl='tail -f log/*.log'
+alias ts='thin start'
+
+function ss() {
+  if [ -e script/rails ]; then
+    script/rails server $@
+  else
+    script/server $@
+  fi
+}
+
+function sc {
+  if [ -e script/rails ]; then
+    script/rails console $@
+  else
+    script/console $@
+  fi
+}
+
+function sg {
+  if [ -e script/rails ]; then
+    script/rails generate $@
+  else
+    script/generate $@
+  fi
+}
+
+# TDD / BDD
+
+alias aa='autotest'
+alias aaf='autotest -f' # Don't run all at start
+alias aas="./script/autospec"
+
+# Setup a tunnel
+function haproxyssh() {
+  ssh -L7997:127.0.0.1:7997 deploy@$1.com
+}
+
+# Syntax check Javascript
+function jsc() {
+  jsl -conf /etc/jsl/jsl.conf -process $1
+}
+
+function aiff2mp3() {
+  lame -h -V 0 $1.aif $1.mp3
+}
+function wav2mp3() {
+  lame -h -V 0 $1.wav $1.mp3
+}
+
+
+# Nginx
+function nginx_stop() {
+    ps ax | grep nginx | cut -d " " -f 1 | xargs sudo kill -9
+}
+function nginx_start() {
+    sudo /opt/nginx/sbin/nginx
+}
+
+# From http://github.com/suztomo/dotfiles
+function rmf(){
+    for file in $*
+    do
+        __rm_single_file $file
+    done
+}
+
+function __rm_single_file(){
+    if ! [ -d ~/.Trash/ ]
+    then
+        command /bin/mkdir ~/.Trash
+    fi
+
+    if ! [ $# -eq 1 ]
+    then
+        echo "__rm_single_file: 1 argument required but $# passed."
+        exit
+    fi
+
+    if [ -e $1 ]
+    then
+        BASENAME=`basename $1`
+        NAME=$BASENAME
+        COUNT=0
+        while [ -e ~/.Trash/$NAME ]
+        do
+            COUNT=$(($COUNT+1))
+            NAME="$BASENAME.$COUNT"
+        done
+
+        command /bin/mv $1 ~/.Trash/$NAME
+    else
+        echo "No such file or directory: $file"
+    fi
+}
+

@@ -1,0 +1,20 @@
+[user]
+	name = Rafael Mendonça França
+	email = rafaelmfranca@gmail.com
+	signingkey = F1EEE948
+[alias]
+	co = checkout
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+[core]
+	excludesfile = /home/rafael/.gitignore
+	editor = vim
+[apply]
+	whitespace = nowarn
+[push]
+	default = matching
+[github]
+	user = rafaelfranca
+	token = 5f52ff784c87c2f886ed31fda6d52f2a

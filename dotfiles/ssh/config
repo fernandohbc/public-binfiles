@@ -1,0 +1,10 @@
+Host thor
+  Port 25666
+
+Host locaweb
+  User agenciamkt
+  hostname agenciamkt.com
+
+Host grupoagencia
+  Port 25666
+  hostname server.grupoagencia.com.br

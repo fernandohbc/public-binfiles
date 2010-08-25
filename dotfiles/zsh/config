@@ -1,0 +1,95 @@
+autoload -U colors
+colors
+
+git_branch() {
+  ruby ~/.bin/dotfiles/ruby/git_branch.rb
+}
+
+setopt prompt_subst
+PROMPT='
+%{$fg_bold[blue]%}%n%{$reset_color%}%%%~ %{$fg_bold[black]%}$(git_branch)
+→ %{$reset_color%}'
+
+# Set RPROMPT to have info show up on the right, too.
+
+#############################
+# Other Options
+
+# setopt PRINT_EXIT_VALUE
+
+setopt CORRECT
+setopt CORRECTALL
+
+setopt hist_ignore_dups     # ignore duplication command history list
+setopt share_history        # share command history data
+setopt HIST_IGNORE_SPACE
+setopt APPEND_HISTORY # write history only when closing
+setopt EXTENDED_HISTORY # add more info
+
+# Other tabbing options
+# setopt NO_AUTO_MENU
+# setopt BASH_AUTO_LIST
+
+setopt AUTO_CD
+
+#############################
+# Variables
+
+# Quote pasted URLs
+autoload url-quote-magic
+zle -N self-insert url-quote-magic
+
+HISTFILE=~/.zsh_history
+SAVEHIST=10000
+HISTSIZE=10000
+
+REPORTTIME=10 # Show elapsed time if command took more than X seconds
+LISTMAX=0 # ask to complete if top of list would scroll off screen
+
+# Load completions for Ruby, Git, etc.
+autoload compinit
+compinit
+
+_cr_complete() { _files -W ~/repos }
+compdef _cr_complete cr
+
+# Make CTRL-W delete after other chars, not just spaces
+WORDCHARS=${WORDCHARS//[&=\/;\!#%\{]}
+
+bindkey "\e[1~" beginning-of-line
+bindkey "\e[4~" end-of-line
+bindkey "\e[5~" beginning-of-history
+bindkey "\e[6~" end-of-history
+bindkey "\e[3~" delete-char
+bindkey "\e[2~" quoted-insert
+bindkey "\e[5C" forward-word
+bindkey "\eOc" emacs-forward-word
+bindkey "\e[5D" backward-word
+bindkey "\eOd" emacs-backward-word
+bindkey "\e\e[C" forward-word
+bindkey "\e\e[D" backward-word
+bindkey "^H" backward-delete-word
+
+# Para rxvt
+bindkey "\e[8~" end-of-line
+bindkey "\e[7~" beginning-of-line
+
+# for non RH/Debian xterm, can't hurt for RH/DEbian xterm
+bindkey "\eOH" beginning-of-line
+bindkey "\eOF" end-of-line
+
+# for freebsd console
+bindkey "\e[H" beginning-of-line
+bindkey "\e[F" end-of-line
+
+# completion in the middle of a line
+bindkey '^i' expand-or-complete-prefix
+
+# History search with up and down arrow keys
+bindkey '^[[A' history-beginning-search-backward
+bindkey '^[[B' history-beginning-search-forward
+
+function command_not_found_handler() {
+  ~/.bin/shell_method_missing.rb $*
+}
+
