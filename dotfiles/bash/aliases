@@ -67,9 +67,6 @@ function new-hg() {
 
 # Git
 
-# Hub gem
-function git(){hub "$@"}
-
 alias ungit="find . -name '.git' -exec rm -rf {} \;"
 alias g='git'
 alias gb='git branch'
